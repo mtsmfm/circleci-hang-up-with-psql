@@ -1,0 +1,20 @@
+version: 2.1
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
+jobs:
+  test:
+    docker:
+      - image: ubuntu
+      - image: postgres
+    steps:
+      - run: apt-get update && apt-get install postgresql-client git -y
+      - run: |
+          until echo < /dev/tcp/localhost/5432; do
+            sleep 1
+          done
+      - run: psql -h localhost -U postgres -c 'SELECT 1'
+
